@@ -5,16 +5,17 @@ plugins {
    alias(libs.plugins.android.application)
    alias(libs.plugins.jetbrains.kotlin.android)
    alias(libs.plugins.kotlin.serialization)
+   id("com.google.gms.google-services")
 }
 
 android {
    namespace = "com.example.workoutplanner"
-   compileSdk = 34
+   compileSdk = 35
 
    defaultConfig {
       applicationId = "com.example.workoutplanner"
       minSdk = 34
-      targetSdk = 34
+      targetSdk = 35
       versionCode = 1
       versionName = "1.0"
 
@@ -71,7 +72,25 @@ android {
 
 dependencies {
 
+   implementation(libs.androidx.credentials)
 
+   // optional - needed for credentials support from play services, for devices running
+   // Android 13 and below.
+   implementation(libs.androidx.credentials.play.services.auth)
+
+   // Import the BoM for the Firebase platform
+   implementation(platform(libs.firebase.bom))
+
+   // Add the dependency for the Firebase Authentication library
+   // When using the BoM, you don't specify versions in Firebase library dependencies
+   implementation(libs.firebase.auth)
+
+   // Also add the dependency for the Google Play services library and specify its version
+   implementation(libs.play.services.auth)
+
+   implementation(libs.firebase.analytics)
+
+   implementation(platform(libs.firebase.bom))
    //Compose ViewModel
    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
@@ -96,6 +115,8 @@ dependencies {
    //Navigation
    implementation(libs.navigation.compose)
    implementation(libs.kotlinx.serialization.json)
+   implementation(libs.firebase.database)
+   implementation(libs.firebase.auth.ktx)
 
    testImplementation(libs.junit)
    androidTestImplementation(libs.androidx.junit)

@@ -1,5 +1,7 @@
-package com.example.workoutplanner
+package com.example.workoutplanner.repository
 
+import com.example.workoutplanner.BuildConfig
+import com.example.workoutplanner.model.ExerciseItem
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -19,7 +21,6 @@ interface ApiService {
 
    @GET("exercises?muscle")
    suspend fun getExercises(
-      @Query("muscle") muscleGroup: String,
-      @Query("limit") limit: Int = 10
-   ): List<Exercise>
+      @Query("name") muscleGroup: String
+   ): List<ExerciseItem>
 }

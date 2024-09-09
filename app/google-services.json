@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "993917551974",
+    "firebase_url": "https://workout-planner-e10b7-default-rtdb.firebaseio.com",
+    "project_id": "workout-planner-e10b7",
+    "storage_bucket": "workout-planner-e10b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993917551974:android:5fe2ce03dc728fa75634a7",
+        "android_client_info": {
+          "package_name": "com.example.workoutplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993917551974-urin9o5ocg71jkm89o083l8e0qitb0b6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.workoutplanner",
+            "certificate_hash": "aa3296c083ec27153463176fc36837841057a00d"
+          }
+        },
+        {
+          "client_id": "993917551974-ibbu8ess9bcdb2iecqqlk2dm0tsii2c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfOam1krnAf1OTZNz9PdqZ7IXdpfaeo1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993917551974-ibbu8ess9bcdb2iecqqlk2dm0tsii2c9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

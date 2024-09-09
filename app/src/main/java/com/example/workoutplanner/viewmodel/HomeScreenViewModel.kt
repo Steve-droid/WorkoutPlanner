@@ -1,4 +1,4 @@
-package com.example.workoutplanner.home
+package com.example.workoutplanner.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class HomeViewModel: ViewModel() {
+class HomeScreenViewModel: ViewModel() {
    private val _welcomeMessage = mutableStateOf("Welcome to the Workout Planner")
    val welcomeMessage: State<String> = _welcomeMessage
 

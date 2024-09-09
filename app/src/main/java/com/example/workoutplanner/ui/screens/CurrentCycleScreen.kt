@@ -1,4 +1,4 @@
-package com.example.workoutplanner.view_current_cycle
+package com.example.workoutplanner.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ fun ViewCycleScreen(navController: NavController) {
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center
    ) {
-      Text(text = "This is the Current Training Cycle Screen",
+      Text(text = "This is where you view your current cycle",
       modifier = Modifier.fillMaxWidth(),
       )
    }

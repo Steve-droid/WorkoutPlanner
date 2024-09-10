@@ -1,7 +1,5 @@
-package com.example.workoutplanner.repository
+package com.example.workoutplanner
 
-import com.example.workoutplanner.BuildConfig
-import com.example.workoutplanner.model.ExerciseItem
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

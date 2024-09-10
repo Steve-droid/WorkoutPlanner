@@ -10,6 +10,7 @@ class HomeScreenViewModel: ViewModel() {
    private val _welcomeMessage = mutableStateOf("Welcome to the Workout Planner")
    val welcomeMessage: State<String> = _welcomeMessage
 
+
    init {
       // Initialize or load data here
       loadWelcomeMessage()

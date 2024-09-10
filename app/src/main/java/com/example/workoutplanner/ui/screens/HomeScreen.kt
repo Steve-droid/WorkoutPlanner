@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workoutplanner.ui.User
+import com.example.workoutplanner.User
 import com.example.workoutplanner.viewmodel.HomeScreenViewModel
 
 @Composable
@@ -33,7 +33,7 @@ fun HomeScreen(
    ) {
       // Title
       Text(
-         text = "Welcome Back, ${user.userName}!",
+         text = "Welcome Back, ${user.name}!",
          style = MaterialTheme.typography.headlineMedium.copy(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary

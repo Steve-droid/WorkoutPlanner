@@ -16,9 +16,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : ComponentActivity() {
-   private val database : FirebaseDatabase = FirebaseDatabase.getInstance()
-   val reference : DatabaseReference = database.reference.child("Users")
-   var manager = androidx.credentials.CredentialManager.create(this)
 
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
@@ -36,6 +33,8 @@ class MainActivity : ComponentActivity() {
       }
    }
 }
+
+
 
 
 

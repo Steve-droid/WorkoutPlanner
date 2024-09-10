@@ -1,16 +1,34 @@
-package com.example.workoutplanner.model
+package com.example.workoutplanner
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.serialization.Serializable
+
+
+@Serializable
+data class User(
+   val name: String = "",
+   var userId: String = "",
+
+   )
+
+@Serializable
+object CreateCycle
+
+@Serializable
+object ViewCycle
+
+@Serializable
+object Catalog
+
+
 
 @Serializable
 data class ExerciseItem(
    val exerciseID: String = "",
-   val name:String = "",
+   var name:String = "",
    val type:String = "",
-   val muscle:String = "",
+   var muscle:String = "",
    val equipment:String = "",
    val difficulty:String = "",
    val instructions:String = "",
@@ -20,7 +38,7 @@ data class ExerciseItem(
 
 @Serializable
 data class Workout(
-   val workoutID: String = "",
+   val workoutID: Int = 0,
    var exercises: MutableState<List<ExerciseItem>> = mutableStateOf(listOf<ExerciseItem>()),
    var day:String = "",
    val name: String = ""

@@ -123,8 +123,8 @@ class CreateCycleViewModel : ViewModel() {
       onNavigateToCreateCycleScreen()
    }
 
-   fun removeExercise( exercise: ExerciseItem) {
-      uiState.value.currentWorkout.value.exercises.value -= exercise
+   fun removeExercise( exercise: ExerciseItem,workout: Workout) {
+      workout.exercises.value -= exercise
    }
 
    fun updateWorkoutDay(workout: Workout, newDay: String) {

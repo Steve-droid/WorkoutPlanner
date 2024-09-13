@@ -19,6 +19,20 @@ dependencyResolutionManagement {
    }
 }
 
+
 rootProject.name = "WorkoutPlanner"
 include(":app")
- 
+include(":auth:data")
+include(":auth:domain")
+include(":auth:presentation")
+include(":core:presentation:designsystem")
+include(":core:presentation:ui")
+include(":core:domain")
+include(":core:data")
+include(":core:database")
+include(":plan:data")
+include(":plan:domain")
+include(":plan:presentation")
+include(":plan:catalog")
+include(":plan:network")
+include(":plan:createplan")

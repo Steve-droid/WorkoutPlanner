@@ -1,7 +1,5 @@
 package com.example.workoutplanner.ui
 
-import android.content.Context
-import android.credentials.CredentialManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,8 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.workoutplanner.ui.theme.WorkoutPlannerTheme
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : ComponentActivity() {
 

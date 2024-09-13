@@ -23,13 +23,21 @@ fun WorkoutPlanner(
    model: WorkoutPlannerViewModel = viewModel()
 ){
    val navController = rememberNavController()
+   val exercise = ExerciseItem(exerciseID = "exercise1",
+      name = "Push Up", type = "Strength",
+      muscle = "Chest", equipment = "None",
+      difficulty = "Beginner", sets = "3",
+      reps = "10")
+
+
+
 
    NavHost(
       navController = navController,
-      startDestination = "home_screen"
+      startDestination = User("Steve", "1")
    ) {
       val createCycleViewModel = CreateCycleViewModel()
-      composable("home_screen") { navBackStackEntry ->
+      composable<User> { navBackStackEntry ->
          //We now supply a function that returns a composable
          //Define 'home' as a 'Home Screen' object
          val user: User = navBackStackEntry.toRoute()
@@ -45,15 +53,14 @@ fun WorkoutPlanner(
             )
       }
 
-      composable("create_cycle_screen") {
+      composable<CreateCycle> {
          CreateCycleScreen(
             onNavigateToCatalog = { navController.navigate(route = Catalog)},
-            onNavigateToHome = { navController.navigate(route = User)},
             vm =createCycleViewModel
          )
       }
 
-      composable("exercise_catalog_screen") {
+      composable<Catalog> {
          ExerciseCatalog(
             onNavigateToNewCycleScreen = {
                navController.navigate(route = CreateCycle)

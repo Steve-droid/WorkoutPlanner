@@ -3,19 +3,20 @@ import java.util.Properties
 
 plugins {
    alias(libs.plugins.android.application)
-   alias(libs.plugins.jetbrains.kotlin.android)
    alias(libs.plugins.kotlin.serialization)
-   id("com.google.gms.google-services")
+   alias(libs.plugins.org.jetbrains.kotlin.android)
+   alias(libs.plugins.compose.compiler)
+
 }
 
 android {
    namespace = "com.example.workoutplanner"
-   compileSdk = 35
+   compileSdk = 34
 
    defaultConfig {
       applicationId = "com.example.workoutplanner"
-      minSdk = 34
-      targetSdk = 35
+      minSdk = 28
+      targetSdk = 34
       versionCode = 1
       versionName = "1.0"
 
@@ -51,12 +52,10 @@ android {
       }
    }
    compileOptions {
-      sourceCompatibility = JavaVersion.VERSION_1_8
-      targetCompatibility = JavaVersion.VERSION_1_8
+      sourceCompatibility = JavaVersion.VERSION_17
+      targetCompatibility = JavaVersion.VERSION_17
    }
-   kotlinOptions {
-      jvmTarget = "1.8"
-   }
+
    buildFeatures {
       compose = true
    }
@@ -68,29 +67,14 @@ android {
          excludes += "/META-INF/{AL2.0,LGPL2.1}"
       }
    }
+   kotlinOptions {
+      jvmTarget = "17"
+   }
 }
 
 dependencies {
 
-   implementation(libs.androidx.credentials)
 
-   // optional - needed for credentials support from play services, for devices running
-   // Android 13 and below.
-   implementation(libs.androidx.credentials.play.services.auth)
-
-   // Import the BoM for the Firebase platform
-   implementation(platform(libs.firebase.bom))
-
-   // Add the dependency for the Firebase Authentication library
-   // When using the BoM, you don't specify versions in Firebase library dependencies
-   implementation(libs.firebase.auth)
-
-   // Also add the dependency for the Google Play services library and specify its version
-   implementation(libs.play.services.auth)
-
-   implementation(libs.firebase.analytics)
-
-   implementation(platform(libs.firebase.bom))
    //Compose ViewModel
    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
@@ -100,29 +84,16 @@ dependencies {
    //Json to Kotlin object mapping
    implementation(libs.converter.gson)
 
-   //Image loading
-   implementation(libs.coil.compose)
-
-   implementation(libs.androidx.core.ktx)
-   implementation(libs.androidx.lifecycle.runtime.ktx)
-   implementation(libs.androidx.activity.compose)
-   implementation(platform(libs.androidx.compose.bom.v20240900))
-   implementation(libs.ui)
-   implementation(libs.ui.graphics)
-   implementation(libs.ui.tooling.preview)
-   implementation(libs.material3)
-
-   //Navigation
-   implementation(libs.navigation.compose)
    implementation(libs.kotlinx.serialization.json)
-   implementation(libs.firebase.database)
-   implementation(libs.firebase.auth.ktx)
+   implementation(libs.androidx.core.ktx)
+   implementation(libs.androidx.activity.ktx)
+   implementation(libs.androidx.foundation.android)
+   implementation(libs.androidx.material3.android)
+   implementation(libs.firebase.database.ktx)
+   implementation(libs.navigation.compose)
+   implementation(libs.androidx.ui.tooling.preview.android)
 
    testImplementation(libs.junit)
    androidTestImplementation(libs.androidx.junit)
    androidTestImplementation(libs.androidx.espresso.core)
-   androidTestImplementation(platform(libs.androidx.compose.bom.v20240900))
-   androidTestImplementation(libs.ui.test.junit4)
-   debugImplementation(libs.ui.tooling)
-   debugImplementation(libs.ui.test.manifest)
 }

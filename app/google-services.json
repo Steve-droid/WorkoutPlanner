@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:993917551974:android:5fe2ce03dc728fa75634a7",
         "android_client_info": {
-          "package_name": "com.example.workoutplanner"
+          "package_name": "com.steve.workoutplanner"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "993917551974-urin9o5ocg71jkm89o083l8e0qitb0b6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.workoutplanner",
+            "package_name": "com.steve.workoutplanner",
             "certificate_hash": "aa3296c083ec27153463176fc36837841057a00d"
           }
         },

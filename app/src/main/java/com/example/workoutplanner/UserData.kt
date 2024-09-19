@@ -2,67 +2,42 @@ package com.example.workoutplanner
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import kotlinx.serialization.Serializable
 
 
-@Serializable
-data class User(
-   val name: String = "",
-   var userId: String = "",
-
-   )
-
-@Serializable
-object CreateCycle
-
-@Serializable
-object ViewCycle
-
-@Serializable
-object Catalog
-
-
-
-@Serializable
 data class ExerciseItem(
    val exerciseID: String = "",
-   var name:String = "",
-   val type:String = "",
-   var muscle:String = "",
-   val equipment:String = "",
-   val difficulty:String = "",
-   val instructions:String = "",
-   val sets:String = "",
-   val reps:String = ""
+   var name: String = "",
+   val type: String = "",
+   var muscle: String = "",
+   val equipment: String = "",
+   val difficulty: String = "",
+   val instructions: String = "",
+   val sets: String = "",
+   val reps: String = ""
 )
 
-@Serializable
 data class Workout(
    val workoutID: Int = 0,
    var exercises: MutableState<List<ExerciseItem>> = mutableStateOf(listOf<ExerciseItem>()),
-   var day:String = "",
+   var day: String = "",
    val name: String = ""
 )
-@Serializable
+
 data class TrainingCycle(
    val cycleID: String = "",
    val workoutList: List<Workout> = emptyList(),
-   val cycleName:String? = null,
-   val cycleDescription:String? = null,
-   val numberOfWeeks:Int = 0
-   )
-
+   val cycleName: String? = null,
+   val cycleDescription: String? = null,
+   val numberOfWeeks: Int = 0
+)
 
 
 data class ExerciseState(
-   val loading:Boolean = true,
+   val loading: Boolean = true,
    val editingSearchTerm: Boolean = false,
    var list: List<ExerciseItem> = emptyList(),
    val error: String? = null
 )
-
-
-
 
 
 /*

@@ -1,12 +1,10 @@
 package com.example.workoutplanner.ui.screens
 
-import android.icu.text.ListFormatter.Width
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,9 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListItemInfo
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,7 +25,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,122 +32,120 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import com.example.workoutplanner.ExerciseItem
 import com.example.workoutplanner.Workout
-import com.example.workoutplanner.viewmodel.CreateCycleViewModel
+import com.example.workoutplanner.viewmodel.SharedViewModel
 
 
 @Composable
 fun CreateCycleScreen(
-   vm: CreateCycleViewModel,
-   onNavigateToCatalog: () -> Unit
-){
+   vm: SharedViewModel,
+   onNavigateToCatalog: (String) -> Unit
+) {
    LazyColumn(
       modifier = Modifier
          .fillMaxSize()
-         .padding(top = 40.dp, start = 16.dp, end = 16.dp), // Add padding to avoid overlap with status bar
+         .padding(
+            top = 40.dp,
+            start = 16.dp,
+            end = 16.dp
+         ), // Add padding to avoid overlap with status bar
       verticalArrangement = Arrangement.spacedBy(8.dp),
       horizontalAlignment = Alignment.CenterHorizontally
    ) {
-      items(vm.uiState.value.workoutList.value) {workout->
-            WorkoutDayCard(
-               onNavigateToCatalog = onNavigateToCatalog,
-               vm = vm,
-               workout
-            )
-         }
+      items(vm.uiState.value.workoutList.value) { workout ->
+         WorkoutDayCard(
+            onNavigateToCatalog = onNavigateToCatalog,
+            vm = vm,
+            workout
+         )
       }
    }
+}
 
 
 @Composable
 fun WorkoutDayCard(
-   onNavigateToCatalog: () -> Unit,
-   vm: CreateCycleViewModel,
+   onNavigateToCatalog: (String) -> Unit,
+   vm: SharedViewModel,
    workout: Workout
-){
-         Card(
+) {
+   Card(
+      modifier = Modifier
+         .fillMaxWidth()
+         .clip(RoundedCornerShape(8.dp))
+         .border(BorderStroke(3.dp, MaterialTheme.colorScheme.primary)),
+      elevation = CardDefaults.cardElevation(8.dp), // Add elevation to the card
+      colors = CardDefaults.cardColors(
+         containerColor = MaterialTheme.colorScheme.surface
+      )
+   ) {
+      Column(
+         modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+         verticalArrangement = Arrangement.Center,
+         horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+         Text(
+            text = workout.day, // Assuming workoutDay has a 'day' property
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+         )
+
+         Spacer(modifier = Modifier.height(8.dp))
+
+         workout.exercises.value.forEach { exercise ->
+            vm.uiState.value.currentExercise.value = exercise
+            ExerciseItemRow(
+               exercise = exercise,
+               vm = vm,
+               workout = workout
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+         }
+
+         Button(
+            onClick = {
+               vm.uiState.value.newWorkoutDay.value = workout.day
+               onNavigateToCatalog(workout.day)
+            },
             modifier = Modifier
-               .fillMaxWidth()
-               .clip(RoundedCornerShape(8.dp))
-               .border(BorderStroke(3.dp, MaterialTheme.colorScheme.primary)),
-            elevation = CardDefaults.cardElevation(8.dp), // Add elevation to the card
-            colors = CardDefaults.cardColors(
-               containerColor = MaterialTheme.colorScheme.surface
+               .wrapContentWidth() // Makes the button only as wide as its content
+               .padding(10.dp)
+               .clip(RoundedCornerShape(5.dp)),
+            colors = ButtonDefaults.buttonColors(
+               containerColor = MaterialTheme.colorScheme.secondaryContainer,
+               contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
          ) {
-            Column(
-               modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(16.dp),
-               verticalArrangement = Arrangement.Center,
-               horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-               Text(
-                  text = workout.day, // Assuming workoutDay has a 'day' property
-                  style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                  modifier = Modifier.fillMaxWidth(),
-                  textAlign = TextAlign.Center
-               )
-
-               Spacer(modifier = Modifier.height(8.dp))
-
-               workout.exercises.value.forEach { exercise ->
-                  vm.uiState.value.currentExercise.value = exercise
-                  ExerciseItemRow(
-                     exercise = exercise,
-                     vm = vm,
-                     workout = workout
-                  )
-                  Spacer(modifier = Modifier.height(8.dp))
-               }
-
-               Button(
-                  onClick = {
-                     vm.uiState.value.newWorkoutDay.value = workout.day
-                     vm.onClickAddExercise(onNavigateToCatalog = onNavigateToCatalog)
-                  },
-                  modifier = Modifier
-                     .wrapContentWidth() // Makes the button only as wide as its content
-                     .padding(10.dp)
-                     .clip(RoundedCornerShape(5.dp)),
-                  colors = ButtonDefaults.buttonColors(
-                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                  )
-               ) {
-                  Text(
-                     text = "+ Add an Exercise",
-                     style = MaterialTheme.typography.labelLarge,
-                     fontSize = 14.sp // Make the font slightly larger for emphasis
-                  )
-               }
-            }
+            Text(
+               text = "+ Add an Exercise",
+               style = MaterialTheme.typography.labelLarge,
+               fontSize = 14.sp // Make the font slightly larger for emphasis
+            )
          }
       }
-
+   }
+}
 
 
 @Composable
 fun ExerciseItemRow(
    exercise: ExerciseItem,
    workout: Workout,
-   vm: CreateCycleViewModel
+   vm: SharedViewModel
 ) {
    Card(
       modifier = Modifier
@@ -212,7 +204,7 @@ fun ExerciseItemRow(
                style = MaterialTheme.typography.bodyLarge.copy(
                   fontSize = 16.sp,
                   color = MaterialTheme.colorScheme.onSurface
-                  ) // Increase font size
+               ) // Increase font size
             )
 
             Spacer(modifier = Modifier.width(8.dp)) // Space between text and icon
@@ -234,129 +226,113 @@ fun ExerciseItemRow(
 
 @Composable
 fun ExerciseCatalog(
-   vm: CreateCycleViewModel,
-   onNavigateToNewCycleScreen: () -> Unit ) {
+   vm: SharedViewModel,
+   onNavigateToNewCycleScreen: () -> Unit
+) {
 
 
-      LazyColumn(
-         modifier = Modifier.fillMaxSize(),
-         contentPadding = PaddingValues(8.dp)
+   LazyColumn(
+      modifier = Modifier.fillMaxSize(),
+      contentPadding = PaddingValues(8.dp)
 
-      ) {
+   ) {
 
-         item {
-            TextField(
-               value = vm.uiState.value.searchBar.value,
-               onValueChange = {
-                  vm.uiState.value.searchBar.value = it
-                  vm.fetchExercises()
-               },
-               label = {
-                  Text(
-                     text = "Search For Exercises",
-                     textAlign = TextAlign.Center,
-                     style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface
-                     )
-
+      item {
+         TextField(
+            value = vm.uiState.value.searchBar.value,
+            onValueChange = {
+               vm.uiState.value.searchBar.value = it
+               vm.fetchExercises()
+            },
+            label = {
+               Text(
+                  text = "Search For Exercises",
+                  textAlign = TextAlign.Center,
+                  style = MaterialTheme.typography.bodyMedium.copy(
+                     color = MaterialTheme.colorScheme.onSurface
                   )
-               },
-               modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(top = 40.dp) // Add top padding to avoid overlap with the status bar
-                  .clip(RoundedCornerShape(12.dp)) // Add rounded corners
-                  .background(MaterialTheme.colorScheme.surface) // Background color
-                  .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline)), // Border color
-               keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-               singleLine = true, // Ensure single-line input for a cleaner look
-               textStyle = TextStyle(
-                  fontSize = 16.sp // Adjust font size for better readability
+
                )
+            },
+            modifier = Modifier
+               .fillMaxWidth()
+               .padding(top = 40.dp) // Add top padding to avoid overlap with the status bar
+               .clip(RoundedCornerShape(12.dp)) // Add rounded corners
+               .background(MaterialTheme.colorScheme.surface) // Background color
+               .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline)), // Border color
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            singleLine = true, // Ensure single-line input for a cleaner look
+            textStyle = TextStyle(
+               fontSize = 16.sp // Adjust font size for better readability
             )
-         }
-
-         if (vm.uiState.value.searchBar.value.isNotEmpty()) {
-
-            items(vm.uiState.value.exerciseListCatalog.value) { exercise ->
-               vm.uiState.value.currentExercise.value = exercise
-
-               OutlinedCard(
-                  shape = RoundedCornerShape(8.dp),
-                  elevation = CardDefaults.cardElevation(2.dp),
-                  modifier = Modifier
-                     .fillMaxWidth()
-                     .padding(vertical = 4.dp)
-                     .clip(RoundedCornerShape(8.dp))
-                     .background(MaterialTheme.colorScheme.surface)
-                     .clickable {
-                        vm.uiState.value.newExercise.value = exercise
-                        vm.onSelectExercise(onNavigateToNewCycleScreen)
-                     }
-               ) {
-
-                  Column(
-                     modifier = Modifier.padding(8.dp)
-                  ) {
-                     // Muscle Group Label
-                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                           .background(
-                              MaterialTheme.colorScheme.secondaryContainer,  // Use theme secondary container color
-                              shape = RoundedCornerShape(4.dp)
-                           )
-                           .padding(horizontal = 8.dp, vertical = 2.dp)
-                     ) {
-                        Text(
-                           text = exercise.muscle.uppercase(),
-                           style = MaterialTheme.typography.labelMedium.copy(
-                              fontWeight = FontWeight.SemiBold,
-                              color = MaterialTheme.colorScheme.onSecondaryContainer  // Use theme color
-                           ),
-                           fontSize = 12.sp
-                        )
-                     }
-
-                     Spacer(modifier = Modifier.height(4.dp))
-
-                     // Exercise Name with Border
-                     Text(
-                        text = exercise.name,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                           fontWeight = FontWeight.Medium,
-                           color = MaterialTheme.colorScheme.onSurface  // Use theme color
-                        ),
-                        modifier = Modifier
-                           .fillMaxWidth()
-                           .border(
-                              1.dp,
-                              MaterialTheme.colorScheme.outline,  // Use theme outline color
-                              shape = RoundedCornerShape(4.dp)
-                           )
-                           .padding(8.dp)
-                     )
-                  }
-               }
-
-            }
-         }
-         }
+         )
       }
 
+      if (vm.uiState.value.searchBar.value.isNotEmpty()) {
 
+         items(vm.uiState.value.exerciseListCatalog.value) { exercise ->
+            vm.uiState.value.currentExercise.value = exercise
 
+            OutlinedCard(
+               shape = RoundedCornerShape(8.dp),
+               elevation = CardDefaults.cardElevation(2.dp),
+               modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(vertical = 4.dp)
+                  .clip(RoundedCornerShape(8.dp))
+                  .background(MaterialTheme.colorScheme.surface)
+                  .clickable {
+                     vm.uiState.value.newExercise.value = exercise
+                     vm.onSelectExercise()
+                     onNavigateToNewCycleScreen()
+                  }
+            ) {
 
+               Column(
+                  modifier = Modifier.padding(8.dp)
+               ) {
+                  // Muscle Group Label
+                  Row(
+                     verticalAlignment = Alignment.CenterVertically,
+                     modifier = Modifier
+                        .background(
+                           MaterialTheme.colorScheme.secondaryContainer,  // Use theme secondary container color
+                           shape = RoundedCornerShape(4.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                  ) {
+                     Text(
+                        text = exercise.muscle.uppercase(),
+                        style = MaterialTheme.typography.labelMedium.copy(
+                           fontWeight = FontWeight.SemiBold,
+                           color = MaterialTheme.colorScheme.onSecondaryContainer  // Use theme color
+                        ),
+                        fontSize = 12.sp
+                     )
+                  }
 
+                  Spacer(modifier = Modifier.height(4.dp))
 
+                  // Exercise Name with Border
+                  Text(
+                     text = exercise.name,
+                     style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface  // Use theme color
+                     ),
+                     modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                           1.dp,
+                           MaterialTheme.colorScheme.outline,  // Use theme outline color
+                           shape = RoundedCornerShape(4.dp)
+                        )
+                        .padding(8.dp)
+                  )
+               }
+            }
 
-
-
-
-
-
-
-
-
-
-
-
+         }
+      }
+   }
+}

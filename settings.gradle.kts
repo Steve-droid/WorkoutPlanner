@@ -1,4 +1,5 @@
 pluginManagement {
+   includeBuild("build-logic")
    repositories {
       google {
          content {
@@ -18,9 +19,8 @@ dependencyResolutionManagement {
       mavenCentral()
    }
 }
-
-
 rootProject.name = "WorkoutPlanner"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":auth:data")
 include(":auth:domain")

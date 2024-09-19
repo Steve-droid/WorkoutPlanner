@@ -4,71 +4,66 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.example.workoutplanner.Catalog
-import com.example.workoutplanner.CreateCycle
-import com.example.workoutplanner.ExerciseItem
-import com.example.workoutplanner.User
-import com.example.workoutplanner.ViewCycle
+import com.example.workoutplanner.login.LoginScreen
+import com.example.workoutplanner.login.LoginViewModel
 import com.example.workoutplanner.ui.screens.CreateCycleScreen
 import com.example.workoutplanner.ui.screens.ExerciseCatalog
 import com.example.workoutplanner.ui.screens.HomeScreen
-import com.example.workoutplanner.viewmodel.CreateCycleViewModel
-import com.example.workoutplanner.viewmodel.WorkoutPlannerViewModel
+import com.example.workoutplanner.viewmodel.SharedViewModel
 
 
 @Composable
 fun WorkoutPlanner(
-   model: WorkoutPlannerViewModel = viewModel()
-){
+) {
    val navController = rememberNavController()
-   val exercise = ExerciseItem(exerciseID = "exercise1",
-      name = "Push Up", type = "Strength",
-      muscle = "Chest", equipment = "None",
-      difficulty = "Beginner", sets = "3",
-      reps = "10")
-
-
-
-
+   val sharedViewModel = SharedViewModel()
+   val name = "Dude"
    NavHost(
       navController = navController,
-      startDestination = User("Steve", "1")
+      startDestination = "home_screen/$name"
    ) {
-      val createCycleViewModel = CreateCycleViewModel()
-      composable<User> { navBackStackEntry ->
-         //We now supply a function that returns a composable
-         //Define 'home' as a 'Home Screen' object
-         val user: User = navBackStackEntry.toRoute()
-         // Present the home screen UI by calling a composable function
-         HomeScreen(
-            user = user,
-            onNavigateToCreateCycle = {
-               navController.navigate(route = CreateCycle)
-            },
-            onNavigateToViewCatalog = {
-               navController.navigate(route = ViewCycle)
-            }
-            )
-      }
 
-      composable<CreateCycle> {
-         CreateCycleScreen(
-            onNavigateToCatalog = { navController.navigate(route = Catalog)},
-            vm =createCycleViewModel
+      composable(route = "login_screen") {
+         val viewModel = viewModel<LoginViewModel>()
+         LoginScreen(
+            state = viewModel.state,
+            onAction = viewModel::onAction,
+            onLoggedIn = { userName ->
+               navController.navigate(route = "home_screen/$userName") {
+               }
+            }
          )
       }
 
-      composable<Catalog> {
-         ExerciseCatalog(
-            onNavigateToNewCycleScreen = {
-               navController.navigate(route = CreateCycle)
+      composable(route = "home_screen/{username}") {
+         val userName = it.arguments?.getString("username") ?: "no name"
+         HomeScreen(
+            userName = userName,
+            onNavigateToCreateCycle = {
+               navController.navigate(route = "create_cycle")
             },
-            vm = createCycleViewModel
+         )
+      }
+
+      composable(route = "create_cycle") {
+         CreateCycleScreen(
+            vm = sharedViewModel,
+            onNavigateToCatalog = { day: String ->
+               navController.navigate(route = "catalog/$day")
+            }
+         )
+      }
+
+      dialog(route = "catalog/{day}") {
+         val day = it.arguments?.getString("day") ?: "no day"
+         ExerciseCatalog(
+            vm = sharedViewModel,
+            onNavigateToNewCycleScreen = {
+               navController.popBackStack()
+            }
          )
       }
    }
-
 }
-

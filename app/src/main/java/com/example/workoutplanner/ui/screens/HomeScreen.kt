@@ -1,4 +1,5 @@
 package com.example.workoutplanner.ui.screens
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,16 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workoutplanner.User
-import com.example.workoutplanner.viewmodel.HomeScreenViewModel
 
 @Composable
 fun HomeScreen(
-   homeScreenViewModel: HomeScreenViewModel = viewModel(),
-   user: User,
+   userName: String,
    onNavigateToCreateCycle: () -> Unit,
-   onNavigateToViewCatalog: () -> Unit
 ) {
    Column(
       modifier = Modifier
@@ -33,7 +29,7 @@ fun HomeScreen(
    ) {
       // Title
       Text(
-         text = "Welcome Back, ${user.name}!",
+         text = "Welcome Back, ${userName}!",
          style = MaterialTheme.typography.headlineMedium.copy(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
@@ -43,7 +39,7 @@ fun HomeScreen(
 
 
       Button(
-         onClick = {onNavigateToCreateCycle() },
+         onClick = { onNavigateToCreateCycle() },
          modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
@@ -74,26 +70,6 @@ fun HomeScreen(
       ) {
          Text(
             text = "View Current Training Cycle",
-            style = MaterialTheme.typography.bodyLarge.copy(
-               fontWeight = FontWeight.Medium
-            )
-         )
-      }
-      Button(
-         onClick = {
-            onNavigateToViewCatalog()
-            },
-         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            contentColor = MaterialTheme.colorScheme.onTertiary
-         ),
-         shape = MaterialTheme.shapes.medium
-      ) {
-         Text(
-            text = "View Exercise Catalog",
             style = MaterialTheme.typography.bodyLarge.copy(
                fontWeight = FontWeight.Medium
             )

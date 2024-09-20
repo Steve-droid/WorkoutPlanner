@@ -24,6 +24,7 @@ lifecycleRuntimeKtx = "2.8.5"
 composeBom = "2024.09.01"
 materialIconsExtended = "1.7.1"
 navigationCompose = "2.8.0"
+runtime = "1.7.2"
 securityCryptoKtx = "1.1.0-alpha06"
 timber = "5.0.1"
 ksp = "2.0.20-1.0.24"
@@ -80,6 +81,7 @@ androidx-credentials-compat = { group = "androidx.credentials", name = "credenti
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 
+androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database = { module = "com.google.firebase:firebase-database" }

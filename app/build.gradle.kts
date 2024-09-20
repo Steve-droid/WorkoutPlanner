@@ -90,7 +90,7 @@ dependencies {
 
    //Json to Kotlin object mapping
    implementation(libs.converter.gson)
-
+   implementation(libs.androidx.runtime)
    // Credentials+ navigation
    implementation(libs.androidx.compose.navigation)
    implementation(libs.kotlinx.serialization.json)

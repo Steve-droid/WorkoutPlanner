@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -43,15 +44,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.workoutplanner.ExerciseItem
-import com.example.workoutplanner.Workout
+import com.example.workoutplanner.WorkoutState
 import com.example.workoutplanner.viewmodel.SharedViewModel
 
 
 @Composable
 fun CreateCycleScreen(
    vm: SharedViewModel,
-   onNavigateToCatalog: (String) -> Unit
+   onNavigateToCatalog: (String) -> Unit,
+   onReturn: () -> Unit
 ) {
+   val context = LocalContext.current
+
    LazyColumn(
       modifier = Modifier
          .fillMaxSize()
@@ -70,6 +74,14 @@ fun CreateCycleScreen(
             workout
          )
       }
+
+      item {
+         Button(onClick = {
+            vm.onClickSaveCycle(context, onReturn)
+         }) {
+            Text(text = "Save Cycle")
+         }
+      }
    }
 }
 
@@ -78,7 +90,7 @@ fun CreateCycleScreen(
 fun WorkoutDayCard(
    onNavigateToCatalog: (String) -> Unit,
    vm: SharedViewModel,
-   workout: Workout
+   workout: WorkoutState
 ) {
    Card(
       modifier = Modifier
@@ -106,7 +118,7 @@ fun WorkoutDayCard(
 
          Spacer(modifier = Modifier.height(8.dp))
 
-         workout.exercises.value.forEach { exercise ->
+         workout.exerciseState.value.forEach { exercise ->
             vm.uiState.value.currentExercise.value = exercise
             ExerciseItemRow(
                exercise = exercise,
@@ -144,7 +156,7 @@ fun WorkoutDayCard(
 @Composable
 fun ExerciseItemRow(
    exercise: ExerciseItem,
-   workout: Workout,
+   workout: WorkoutState,
    vm: SharedViewModel
 ) {
    Card(

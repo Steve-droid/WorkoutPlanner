@@ -3,6 +3,12 @@ package com.example.workoutplanner
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
+data class User(
+   var firstName: String = "",
+   var lastName: String = "",
+   var email: String,
+   var userId: String,
+)
 
 data class ExerciseItem(
    val exerciseID: String = "",
@@ -18,14 +24,22 @@ data class ExerciseItem(
 
 data class Workout(
    val workoutID: Int = 0,
-   var exercises: MutableState<List<ExerciseItem>> = mutableStateOf(listOf<ExerciseItem>()),
+   var exercises: List<ExerciseItem> = listOf(),
    var day: String = "",
    val name: String = ""
 )
 
+data class WorkoutState(
+   val workoutID: Int = 0,
+   var exercises: List<ExerciseItem> = listOf(),
+   var exerciseState: MutableState<List<ExerciseItem>> = mutableStateOf(exercises),
+   var day: String = "",
+   val name: String = ""
+)
+
+
 data class TrainingCycle(
-   val cycleID: String = "",
-   val workoutList: List<Workout> = emptyList(),
+   var workoutList: List<Workout> = emptyList(),
    val cycleName: String? = null,
    val cycleDescription: String? = null,
    val numberOfWeeks: Int = 0

@@ -1,104 +1,100 @@
 package com.example.workoutplanner.login
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.workoutplanner.AccountManager
-import kotlinx.coroutines.launch
-
+import com.example.workoutplanner.viewmodel.SharedViewModel
 
 @Composable
 fun LoginScreen(
-   state: LoginState,
-   onAction: (LoginAction) -> Unit,
-   onLoggedIn: (String) -> Unit
+   sharedViewModel: SharedViewModel,
+   onLoginSuccess: () -> Unit,
+   onRegister: () -> Unit,
+   onError: (String) -> Unit
 ) {
-   val scope = rememberCoroutineScope()
+   var email by remember { mutableStateOf("") }
+   var password by remember { mutableStateOf("") }
+   var isLoading by remember { mutableStateOf(false) }
+   var isRegistered by remember { mutableStateOf(false) }
    val context = LocalContext.current
-   val accountManager = remember {
-      AccountManager(context as ComponentActivity)
-   }
-
-   LaunchedEffect(key1 = true) {
-      val result = accountManager.signIn()
-      onAction(LoginAction.OnSignIn(result))
-   }
-
-   LaunchedEffect(key1 = state.loggedInUser) {
-      if (state.loggedInUser != null) {
-         onLoggedIn(state.loggedInUser)
-      }
-   }
 
    Column(
       modifier = Modifier
          .fillMaxSize()
          .padding(16.dp),
-      verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
    ) {
       TextField(
-         value = state.username,
-         onValueChange = {
-            onAction(LoginAction.OnUsernameChange(it))
-         },
-         label = { Text(text = "Username") },
-         modifier = Modifier.fillMaxWidth()
+         value = email,
+         onValueChange = { email = it },
+         label = { Text("Email") }
       )
+      Spacer(modifier = Modifier.height(8.dp))
       TextField(
-         value = state.password,
-         onValueChange = {
-            onAction(LoginAction.OnPasswordChange(it))
-         },
-         label = { Text(text = "Password") },
-         modifier = Modifier.fillMaxWidth()
+         value = password,
+         onValueChange = { password = it },
+         label = { Text("Password") },
+         visualTransformation = PasswordVisualTransformation()
       )
-      Row {
-         Text(text = "Register")
-         Spacer(modifier = Modifier.width(8.dp))
-         Switch(
-            checked = state.isRegister,
-            onCheckedChange = {
-               onAction(LoginAction.OnToggleIsRegister)
-            }
-         )
-      }
-      if (state.errorMessage != null) {
-         Text(
-            text = state.errorMessage,
-            color = MaterialTheme.colorScheme.error
-         )
-      }
+      Spacer(modifier = Modifier.height(16.dp))
       Button(onClick = {
-         scope.launch {
-            if (state.isRegister) {
-               val result = accountManager.signUp(
-                  username = state.username,
-                  password = state.password
-               )
-               onAction(LoginAction.OnSignUp(result))
+         isLoading = true
+         sharedViewModel.signInWithEmail(
+            context = context,
+            email = email,
+            password = password,
+            onResult = { success, errorMessage ->
+               isLoading = false
+               if (success) {
+                  onLoginSuccess()
+               } else {
+                  onError(errorMessage ?: "Unknown error")
+               }
             }
-         }
+         )
       }) {
-         Text(text = if (state.isRegister) "Register" else "Login")
+         Text("Login")
       }
+
+      // Spacer for layout
+      Spacer(modifier = Modifier.height(16.dp))
+
+      // Register Button (Navigates to Registration Screen)
+      Button(
+         onClick = { onRegister() }
+      ) {
+         Text("Register")
+      }
+
+      if (isLoading) {
+         CircularProgressIndicator()
+      }
+   }
+}
+
+@Composable
+fun GoogleSignInButton(
+   onSignInClick: () -> Unit
+) {
+   Button(onClick = { onSignInClick() }) {
+      Text("Sign in with Google")
    }
 }

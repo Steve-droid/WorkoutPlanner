@@ -1,11 +1,17 @@
 package com.example.workoutplanner
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,22 +29,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -59,9 +66,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.workoutplanner.ui.theme.FadeAnimation
 import com.example.workoutplanner.ui.theme.ScaleAnimation
-
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +78,15 @@ fun CreateCycleScreen(
 ) {
    val uiState by vm.uiState.collectAsState()
    var showInitialDialog by remember { mutableStateOf(true) }
+   var showSaveConfirmation by remember { mutableStateOf(false) }
+   var showTooltip by remember { mutableStateOf(false) }
+   var isLoading by remember { mutableStateOf(false) }
    val context = LocalContext.current
+
+   LaunchedEffect(key1 = Unit) {
+      delay(1000)
+      showTooltip = true
+   }
 
    if (showInitialDialog) {
       CycleDetailsDialog(
@@ -94,112 +108,153 @@ fun CreateCycleScreen(
       )
    }
 
-   Scaffold(
-      topBar = {
-         TopAppBar(
-            title = { Text("Create Training Cycle") },
-            colors = TopAppBarDefaults.topAppBarColors(
-               containerColor = MaterialTheme.colorScheme.primaryContainer,
-               titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-         )
-      },
-      floatingActionButton = {
-         FloatingActionButton(
-            onClick = {
-               vm.saveCompletedTrainingCycle(
-                  onSuccess = {
-                     Toast.makeText(
-                        context,
-                        "Training cycle saved successfully!",
-                        Toast.LENGTH_LONG
-                     ).show()
-                     onNavigateToHome()
-                  },
-                  onError = { errorMessage ->
-                     Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-                  }
-               )
-            },
-            containerColor = MaterialTheme.colorScheme.primary
-         ) {
-            Icon(Icons.Filled.Done, contentDescription = "Save Cycle")
-         }
-      }
-   ) { innerPadding ->
-      Column(
-         modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .padding(16.dp)
-      ) {
-         Text(
-            text = uiState.currentCycle.cycleName,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-         )
+   Scaffold { innerPadding ->
 
-         LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-         ) {
-            items(uiState.workouts, key = { it.id }) { workout ->
-               WorkoutDayCard(
-                  workout = workout,
-                  onAddExercise = { onNavigateToCatalog(workout.id) },
-                  vm = vm
-               )
+      LazyColumn(
+         modifier = Modifier.padding(innerPadding)
+      ) {
+
+         item {
+            Text(
+               text = uiState.currentCycle.cycleName,
+               style = MaterialTheme.typography.labelMedium,
+            )
+         }
+
+         items(uiState.workouts, key = { it.id }) { workout ->
+            WorkoutDayCard(
+               vm = vm,
+               workout = workout,
+               onAddExercise = { onNavigateToCatalog(workout.id) }
+            )
+         }
+
+         item {
+            Button(
+               onClick = { showSaveConfirmation = true },
+               modifier = Modifier.fillMaxWidth(),
+               enabled = uiState.workouts.any { it.exercises.isNotEmpty() }
+            ) {
+               Icon(Icons.Default.Done, contentDescription = null)
+               Spacer(modifier = Modifier.width(8.dp))
+               Text("Save Cycle")
+            }
+
+            AnimatedVisibility(
+               visible = showTooltip,
+               enter = fadeIn() + expandVertically(),
+               exit = fadeOut() + shrinkVertically()
+            ) {
+               Surface(
+                  modifier = Modifier
+                     .padding(bottom = 8.dp),
+                  shape = MaterialTheme.shapes.medium,
+                  tonalElevation = 4.dp
+               ) {
+                  Row(
+                     modifier = Modifier.padding(8.dp),
+                     verticalAlignment = Alignment.CenterVertically
+                  ) {
+                     Icon(Icons.Default.Info, contentDescription = null)
+                     Spacer(modifier = Modifier.width(8.dp))
+                     Text("Click here to save your training cycle")
+                  }
+               }
             }
          }
+      }
+
+
+      // Loading overlay
+      if (isLoading) {
+         Box(
+            modifier = Modifier
+               .fillMaxSize()
+               .background(Color.Black.copy(alpha = 0.5f)),
+            contentAlignment = Alignment.Center
+         ) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+         }
+      }
+
+
+      if (showSaveConfirmation) {
+         AlertDialog(
+            onDismissRequest = { showSaveConfirmation = false },
+            title = { Text("Save Training Cycle") },
+            text = { Text("Are you sure you want to save this training cycle?") },
+            confirmButton = {
+               Button(
+                  onClick = {
+                     showSaveConfirmation = false
+                     isLoading = true
+                     vm.saveCompletedTrainingCycle(
+                        onSuccess = {
+                           isLoading = false
+                           Toast.makeText(
+                              context,
+                              "Training cycle saved successfully!",
+                              Toast.LENGTH_LONG
+                           ).show()
+                           onNavigateToHome()
+                        },
+                        onError = { errorMessage ->
+                           isLoading = false
+                           Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                        }
+                     )
+                  }
+               ) {
+                  Text("Save")
+               }
+            },
+            dismissButton = {
+               TextButton(onClick = { showSaveConfirmation = false }) {
+                  Text("Cancel")
+               }
+            }
+         )
       }
    }
 }
 
 @Composable
 fun WorkoutDayCard(
-   workout: WorkoutState,
+   workout: Workout,
    onAddExercise: () -> Unit,
    vm: SharedViewModel
 ) {
-   var visible by remember { mutableStateOf(false) }
 
-   LaunchedEffect(Unit) {
-      visible = true
-   }
 
-   ScaleAnimation(visible = visible) {
-
-      Card(
-         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+   Card(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(vertical = 4.dp),
+      elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+   ) {
+      Column(
+         modifier = Modifier.padding(16.dp)
       ) {
-         Column(
-            modifier = Modifier.padding(16.dp)
+         Text(
+            text = "${workout.day} - ${workout.name}",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+         )
+         Spacer(modifier = Modifier.height(8.dp))
+
+         workout.exercises.forEach { exercise ->
+            ExerciseItemRow(exercise = exercise, workout = workout, vm = vm)
+         }
+
+         Button(
+            onClick = onAddExercise,
+            modifier = Modifier
+               .fillMaxWidth()
+               .padding(top = 8.dp)
          ) {
-            Text(
-               text = "${workout.day} - ${workout.name}",
-               style = MaterialTheme.typography.titleMedium,
-               fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            workout.exercises.forEach { exercise ->
-               ExerciseItemRow(exercise = exercise, workout = workout, vm = vm)
-            }
-
-            Button(
-               onClick = onAddExercise,
-               modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(top = 8.dp)
-            ) {
-               Icon(Icons.Default.Add, contentDescription = null)
-               Spacer(modifier = Modifier.width(8.dp))
-               Text("Add Exercise")
-            }
+            Icon(Icons.Default.Add, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Add Exercise")
          }
       }
    }
@@ -285,84 +340,50 @@ fun CycleDetailsDialog(
 @Composable
 fun ExerciseItemRow(
    exercise: ExerciseItem,
-   workout: WorkoutState,
+   workout: Workout,
    vm: SharedViewModel
 ) {
    Card(
       modifier = Modifier
          .fillMaxWidth()
-         .padding(vertical = 4.dp)
-         .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), RoundedCornerShape(8.dp)),
-      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+         .padding(vertical = 4.dp),
+      elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
    ) {
-
       Column(
          modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
       ) {
-
-
          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-               .background(
-                  MaterialTheme.colorScheme.secondaryContainer, // Light red background color
-                  shape = RoundedCornerShape(4.dp)
-               )
-               .padding(horizontal = 8.dp, vertical = 2.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
          ) {
-            Text(
-               text = exercise.muscle.uppercase(),
-               style = MaterialTheme.typography.labelMedium.copy(
-                  fontWeight = FontWeight.Bold,
-                  color = MaterialTheme.colorScheme.onSecondaryContainer // Darker red text color
-               ),
-               fontSize = 12.sp // Slightly smaller font size
-            )
-         }
-
-         Spacer(modifier = Modifier.height(4.dp))
-
-         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween, // Distribute space between components
-            modifier = Modifier
-               .fillMaxWidth()
-               .padding(vertical = 4.dp)
-         ) {
-
             Text(
                text = exercise.name,
-               modifier = Modifier
-                  .weight(1f) // Take up available horizontal space
-                  .border(
-                     BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                     RoundedCornerShape(4.dp)
-                  )
-                  .padding(12.dp) // Increase padding for a larger text area
-                  .clip(RoundedCornerShape(4.dp)),
-               style = MaterialTheme.typography.bodyLarge.copy(
-                  fontSize = 16.sp,
-                  color = MaterialTheme.colorScheme.onSurface
-               ) // Increase font size
+               style = MaterialTheme.typography.titleMedium,
+               color = MaterialTheme.colorScheme.onPrimaryContainer,
+               fontWeight = FontWeight.Bold
             )
-
-            Spacer(modifier = Modifier.width(8.dp)) // Space between text and icon
             IconButton(
                onClick = {
                   vm.deleteExerciseFromWorkout(workoutId = workout.id, exerciseId = exercise.id)
-               },
-               modifier = Modifier.size(32.dp) // Make the icon button larger
+               }
             ) {
                Icon(
                   imageVector = Icons.Default.Delete,
                   contentDescription = "Remove Exercise",
-                  tint = MaterialTheme.colorScheme.error,
-                  modifier = Modifier.size(24.dp) // Adjust icon size within the button
+                  tint = MaterialTheme.colorScheme.error
                )
             }
          }
+         Spacer(modifier = Modifier.height(4.dp))
+         Text(
+            text = exercise.muscle.uppercase(),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+         )
       }
    }
 }
@@ -421,7 +442,7 @@ fun ExerciseCatalog(
                visible = true
             }
 
-            FadeAnimation(visible = visible) {
+            ScaleAnimation(visible = visible) {
 
                vm.updateCurrentExercise(exercise)
                OutlinedCard(

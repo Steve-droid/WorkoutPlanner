@@ -2,6 +2,7 @@ package com.example.workoutplanner
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import com.google.firebase.Timestamp
 import java.util.UUID
 
 data class User(
@@ -11,16 +12,19 @@ data class User(
    var userId: String = "",
 )
 
+data class ExerciseSet(
+   val weight: String = "",
+   val reps: String = ""
+)
 
 data class ExerciseItem(
-   val id: String = UUID.randomUUID().toString(),
+   var id: String = UUID.randomUUID().toString(),
    val muscle: String = "",
    val name: String = "",
-   val sets: Int = 0,
-   val reps: Int = 0,
-   val weight: Double = 0.0,
+   var sets: List<ExerciseSet> = listOf(),
    val instructions: String = ""
 )
+
 
 data class FirestoreExercise(
    val id: String = "",
@@ -31,12 +35,6 @@ data class FirestoreExercise(
    val instructions: String = ""
 )
 
-data class Workout(
-   val id: String = "",
-   var exercises: List<ExerciseItem> = listOf(),
-   var day: String = "",
-   val name: String = ""
-)
 
 data class FirestoreWorkout(
    val id: String = "",
@@ -46,11 +44,11 @@ data class FirestoreWorkout(
 
 data class UIState(
    val currentCycle: FirestoreTrainingCycle = FirestoreTrainingCycle(),
-   var workouts: List<WorkoutState> = emptyList(),
+   var workouts: List<Workout> = emptyList(),
    var exerciseListCatalog: MutableState<List<ExerciseItem>> = mutableStateOf(listOf(ExerciseItem())),
    var newWorkoutDay: MutableState<String> = mutableStateOf(""),
-   var currentWorkout: MutableState<WorkoutState> = mutableStateOf(WorkoutState()),
-   var newWorkout: MutableState<WorkoutState> = mutableStateOf(WorkoutState()),
+   var currentWorkout: MutableState<Workout> = mutableStateOf(Workout()),
+   var newWorkout: MutableState<Workout> = mutableStateOf(Workout()),
    var currentExercise: MutableState<ExerciseItem> = mutableStateOf(ExerciseItem()),
    var newExercise: MutableState<ExerciseItem> = mutableStateOf(ExerciseItem()),
    var userId: MutableState<String> = mutableStateOf(""),
@@ -72,22 +70,25 @@ data class UIState(
 )
 
 
-data class WorkoutState(
-   val id: String = "",
-   val day: String = "",
-   val name: String = "",
-   var exercises: List<ExerciseItem> = listOf(),
-)
-
-
 data class TrainingCycle(
+   val id: String = UUID.randomUUID().toString(),
    val cycleName: String = "",
    val numberOfWeeks: Int = 1,
-   var workoutList: List<Workout> = listOf()
+   var workouts: List<Workout> = listOf()
 )
+
 
 data class FirestoreTrainingCycle(
    val id: String = "",
    val cycleName: String = "",
    val numberOfWeeks: Int = 0,
+   val createdAt: Timestamp? = null,
+   val workoutList: List<Workout> = emptyList()
+)
+
+data class Workout(
+   var id: String = "",
+   val day: String = "",
+   val name: String = "",
+   var exercises: List<ExerciseItem> = emptyList()
 )

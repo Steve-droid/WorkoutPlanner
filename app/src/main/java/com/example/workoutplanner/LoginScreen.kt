@@ -1,5 +1,6 @@
 package com.example.workoutplanner
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,10 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+
 
 @Composable
 fun LoginScreen(
@@ -45,15 +49,23 @@ fun LoginScreen(
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
    ) {
+      Image(
+         modifier = Modifier.size(80.dp),
+         painter = painterResource(id = R.drawable.baseline_fitness_center_24),
+         contentDescription = "",
+         contentScale = ContentScale.FillBounds
+      )
+      Spacer(modifier = Modifier.height(32.dp))
       Text(
-         text = "Welcome Back",
+         text = "Sign In To Your Account",
          style = MaterialTheme.typography.headlineMedium.copy(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
          ),
-         modifier = Modifier.padding(bottom = 32.dp)
+         modifier = Modifier.padding(bottom = 16.dp)
       )
 
+      Spacer(modifier = Modifier.height(16.dp))
       OutlinedTextField(
          value = email,
          onValueChange = { email = it },
@@ -113,6 +125,6 @@ fun LoginScreen(
       ) {
          Text("Don't have an account? Register")
       }
-      
+
    }
 }

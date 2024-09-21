@@ -1,16 +1,21 @@
 package com.example.workoutplanner
 
+import HomeScreen
+import TrainingCycleDetailScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 
 @Composable
@@ -18,6 +23,9 @@ fun WorkoutPlanner() {
    val navController = rememberNavController()
    val sharedViewModel = SharedViewModel()
 
+   LaunchedEffect(Unit) {
+      sharedViewModel.fetchUserData()
+   }
    NavHost(
       navController = navController,
       startDestination = "login_screen"
@@ -69,15 +77,11 @@ fun WorkoutPlanner() {
          )
       }
 
-      composable(route = "home_screen") {
+      composable("home_screen") {
          HomeScreen(
-            onNavigateToCreateCycle = {
-               navController.navigate(route = "create_cycle")
-            },
-            userName = "Steve",
-            onNavigateToViewCycles = {
-              
-            }
+            viewModel = sharedViewModel,
+            onNavigateToCreateCycle = { navController.navigate("create_cycle") },
+            onNavigateToViewCycles = { navController.navigate("view_cycles") }
          )
       }
 
@@ -106,10 +110,25 @@ fun WorkoutPlanner() {
          )
       }
 
-      composable(route = "view_cycle/{cycleId}") { backStackEntry ->
-         val cycleId = backStackEntry.arguments?.getString("cycleId") ?: ""
-         ViewCycleScreen(
-            sharedViewModel = sharedViewModel,
+      composable(route = "view_cycles") { backStackEntry ->
+         ViewCyclesScreen(
+            viewModel = sharedViewModel,
+            onNavigateBack = {
+               navController.popBackStack()
+            },
+            onCycleSelected = { cycleId ->
+               navController.navigate("training_cycle_detail/$cycleId")
+            }
+         )
+      }
+
+      composable(
+         route = "training_cycle_detail/{cycleId}",
+         arguments = listOf(navArgument("cycleId") { type = NavType.StringType })
+      ) { backStackEntry ->
+         val cycleId = backStackEntry.arguments?.getString("cycleId") ?: return@composable
+         TrainingCycleDetailScreen(
+            viewModel = sharedViewModel,
             cycleId = cycleId,
             onNavigateBack = {
                navController.popBackStack()

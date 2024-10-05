@@ -14,15 +14,15 @@ track their progress, and maintain a consistent workout schedule.
 
 ## Screenshots
 
-![Login Screen.png](screenshots/Login%20Screen.png)
-![Registration Screen.png](screenshots/Registration%20Screen.png)
-![Home Screen.png](screenshots/Home%20Screen.png)
-![Create Cycle Dialog.png](screenshots/Create%20Cycle%20Dialog.png)
-![Create Cycle Screen.png](screenshots/Create%20Cycle%20Screen.png)
-![Exercise Catalog.png](screenshots/Exercise%20Catalog.png)
-![Cycle Detail Screen.png](screenshots/Cycle%20Detail%20Screen.png)
-![Exercise editing.png](screenshots/Exercise%20editing.png)
-![Training Cycle Detail- Further Weeks.png](screenshots/Training%20Cycle%20Detail-%20Further%20Weeks.png)
+<img src="screenshots/Login%20Screen.png" width="200" alt="Login Screen">
+<img src="screenshots/Registration%20Screen.png" width="200" alt="Registration Screen">
+<img src="screenshots/Home%20Screen.png" width="200" alt="Home Screen">
+<img src="screenshots/Create%20Cycle%20Dialog.png" width="200" alt="Create Cycle Dialog">
+<img src="screenshots/Create%20Cycle%20Screen.png" width="200" alt="Create Cycle Screen">
+<img src="screenshots/Exercise%20Catalog.png" width="200" alt="Exercise Catalog">
+<img src="screenshots/Cycle%20Detail%20Screen.png" width="200" alt="Cycle Detail Screen">
+<img src="screenshots/Exercise%20editing.png" width="200" alt="Exercise editing">
+<img src="screenshots/Training%20Cycle%20Detail-%20Further%20Weeks.png" width="200" alt="Training Cycle Detail- Further Weeks">
 
 ## Technologies Used
 

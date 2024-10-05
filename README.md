@@ -14,17 +14,21 @@ track their progress, and maintain a consistent workout schedule.
 
 ## Screenshots
 
-<img src="screenshots/Login%20Screen.png" width="200" alt="Login Screen">
-<img src="screenshots/Registration%20Screen.png" width="200" alt="Registration Screen">
-<img src="screenshots/Home%20Screen.png" width="200" alt="Home Screen">
-<img src="screenshots/Create%20Cycle%20Dialog.png" width="200" alt="Create Cycle Dialog">
-<img src="screenshots/Create%20Cycle%20Screen.png" width="200" alt="Create Cycle Screen">
-<img src="screenshots/Exercise%20Catalog.png" width="200" alt="Exercise Catalog">
-<img src="screenshots/Cycle%20Detail%20Screen.png" width="200" alt="Cycle Detail Screen">
-<img src="screenshots/Exercise%20editing.png" width="200" alt="Exercise editing">
-<img src="screenshots/Training%20Cycle%20Detail-%20Further%20Weeks.png" width="200" alt="Training Cycle Detail- Further Weeks">
-## Technologies Used
+<div style="display: flex; overflow-x: auto; padding: 10px 0;">
+  <img src="screenshots/Login%20Screen.png" alt="Login Screen" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Registration%20Screen.png" alt="Registration Screen" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Home%20Screen.png" alt="Home Screen" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Create%20Cycle%20Dialog.png" alt="Create Cycle Dialog" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Create%20Cycle%20Screen.png" alt="Create Cycle Screen" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Exercise%20Catalog.png" alt="Exercise Catalog" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Cycle%20Detail%20Screen.png" alt="Cycle Detail Screen" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Exercise%20editing.png" alt="Exercise editing" style="width: 250px; margin-right: 10px;">
+  <img src="screenshots/Training%20Cycle%20Detail-%20Further%20Weeks.png" alt="Training Cycle Detail- Further Weeks" style="width: 250px; margin-right: 10px;">
+</div>
 
+
+
+## Technologies Used
 - Kotlin
 - Jetpack Compose
 - Firebase Authentication

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="17" />
+    <bytecodeTargetLevel target="17">
+      <module name="WorkoutPlanner.auth.data" target="21" />
+      <module name="WorkoutPlanner.auth.presentation" target="21" />
+      <module name="WorkoutPlanner.core.data" target="21" />
+      <module name="WorkoutPlanner.core.database" target="21" />
+      <module name="WorkoutPlanner.core.presentation.designsystem" target="21" />
+      <module name="WorkoutPlanner.core.presentation.ui" target="21" />
+      <module name="WorkoutPlanner.plan.catalog" target="21" />
+      <module name="WorkoutPlanner.plan.createplan" target="21" />
+      <module name="WorkoutPlanner.plan.data" target="21" />
+      <module name="WorkoutPlanner.plan.network" target="21" />
+      <module name="WorkoutPlanner.plan.presentation" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

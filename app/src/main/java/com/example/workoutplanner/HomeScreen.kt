@@ -1,9 +1,12 @@
+package com.example.workoutplanner
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,120 +35,124 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.workoutplanner.SharedViewModel
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-   viewModel: SharedViewModel,
-   onNavigateToCreateCycle: () -> Unit,
-   onNavigateToViewCycles: () -> Unit
+    viewModel: SharedViewModel,
+    onNavigateToCreateCycle: () -> Unit,
+    onNavigateToViewCycles: () -> Unit
 ) {
-   val userFirstName by viewModel.userFirstName.collectAsState()
+    val userFirstName by viewModel.userFirstName.collectAsState()
 
-   LaunchedEffect(Unit) {
-      viewModel.fetchUserData()
-   }
+    LaunchedEffect(Unit) {
+        viewModel.fetchUserData()
+    }
 
-   Scaffold(
-      topBar = {
-         TopAppBar(
-            title = {
-               Text(
-                  "Workout Planner",
-                  modifier = Modifier.fillMaxWidth(),
-                  textAlign = TextAlign.Center
-               )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-               containerColor = MaterialTheme.colorScheme.background
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "Workout Planner",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
-         )
-      }
-   ) { innerPadding ->
-      Column(
-         modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .padding(24.dp),
-         verticalArrangement = Arrangement.spacedBy(24.dp),
-         horizontalAlignment = Alignment.CenterHorizontally
-      ) {
-         WelcomeCard(userName = userFirstName ?: "User")
-         ActionButton(
-            text = "Create New Training Cycle",
-            icon = Icons.Default.Add,
-            onClick = onNavigateToCreateCycle,
-            gradient = Brush.verticalGradient(
-               listOf(
-                  MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                  MaterialTheme.colorScheme.primary
-               )
-            )
-         )
-         ActionButton(
-            text = "View Training Cycles",
-            icon = Icons.AutoMirrored.Filled.List,
-            onClick = onNavigateToViewCycles,
-            gradient = Brush.verticalGradient(
-               listOf(
-                  MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f),
-                  MaterialTheme.colorScheme.secondary
-               )
-            )
-         )
-      }
-   }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+               .fillMaxSize()
+               .padding(innerPadding)
+               .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+            WelcomeCard(userName = userFirstName ?: "User")
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ActionButton(
+                    text = "Create New Training Cycle",
+                    icon = Icons.Default.Add,
+                    onClick = onNavigateToCreateCycle,
+                    gradient = Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                            MaterialTheme.colorScheme.primary
+                        )
+                    )
+                )
+                ActionButton(
+                    text = "View Training Cycles",
+                    icon = Icons.AutoMirrored.Filled.List,
+                    onClick = onNavigateToViewCycles,
+                    gradient = Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f),
+                            MaterialTheme.colorScheme.secondary
+                        )
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
 }
 
 @Composable
 fun WelcomeCard(userName: String) {
-   Column(
-      modifier = Modifier.padding(24.dp),
-      horizontalAlignment = Alignment.CenterHorizontally
-   ) {
-      Text(
-         text = "Welcome back,",
-         style = MaterialTheme.typography.headlineSmall,
-         color = MaterialTheme.colorScheme.primary
-      )
-      Text(
-         text = userName,
-         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-         color = MaterialTheme.colorScheme.secondary
-      )
-   }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Welcome back,",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = userName,
+            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.secondary
+        )
+    }
 }
 
 @Composable
 fun ActionButton(
-   text: String,
-   icon: ImageVector,
-   onClick: () -> Unit,
-   gradient: Brush
+    text: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    gradient: Brush
 ) {
-   Button(
-      onClick = onClick,
-      modifier = Modifier
-         .fillMaxWidth()
-         .height(56.dp),
-      colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-      contentPadding = PaddingValues(0.dp)
-   ) {
-      Box(
-         modifier = Modifier
-            .fillMaxSize()
-            .background(gradient),
-         contentAlignment = Alignment.Center
-      ) {
-         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-         ) {
-            Icon(icon, contentDescription = null, tint = Color.White)
-            Text(text, color = Color.White)
-         }
-      }
-   }
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+           .fillMaxWidth()
+           .height(56.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Box(
+            modifier = Modifier
+               .fillMaxSize()
+               .background(gradient),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(icon, contentDescription = null, tint = Color.White)
+                Text(text, color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
 }

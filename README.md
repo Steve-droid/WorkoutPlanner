@@ -27,7 +27,6 @@ track their progress, and maintain a consistent workout schedule.
 </div>
 
 
-
 ## Technologies Used
 - Kotlin
 - Jetpack Compose
